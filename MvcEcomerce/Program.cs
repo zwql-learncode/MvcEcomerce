@@ -1,6 +1,7 @@
 global using Microsoft.EntityFrameworkCore;
 global using MvcEcomerce.Infrastructure.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MvcEcomerce.Application.PaypalClient;
 using MvcEcomerce.Services.CategoryService;
 using MvcEcomerce.Services.ProductService;
 
@@ -31,6 +32,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpContextAccessor();
+
+//Register PaypalClient
+builder.Services.AddSingleton(x => new PaypalClient(
+    builder.Configuration["PaypalOptions:AppId"],
+    builder.Configuration["PaypalOptions:AppSecrect"],
+    builder.Configuration["PaypalOptions:Mode"]
+    ));
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
