@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using MvcEcomerce.Application.PaypalClient;
 using MvcEcomerce.Services.CategoryService;
 using MvcEcomerce.Services.ProductService;
+using MvcEcomerce.Services.VnPayService;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +43,7 @@ builder.Services.AddSingleton(x => new PaypalClient(
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 var app = builder.Build();
 

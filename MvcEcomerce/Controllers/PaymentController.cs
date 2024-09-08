@@ -4,21 +4,24 @@ using MvcEcomerce.Application.DTOs.RequestDTO;
 using MvcEcomerce.Application.DTOs.ResponseDTO;
 using MvcEcomerce.Application.PaypalClient;
 using MvcEcomerce.Application.SessionExtensions;
+using MvcEcomerce.Application.VnPay;
 using MvcEcomerce.Domain.Entities;
+using MvcEcomerce.Services.VnPayService;
 
 namespace MvcEcomerce.Controllers
 {
     public class PaymentController : Controller
     {
-        public PaymentController(DataContext context, PaypalClient paypalClient)
+        public PaymentController(DataContext context, PaypalClient paypalClient, IVnPayService vnPayService)
         {
             _context = context;
             _paypalClient = paypalClient;
+            _vnPayService = vnPayService;
         }
 
         private readonly DataContext _context;
         private readonly PaypalClient _paypalClient;
-
+        private readonly IVnPayService _vnPayService;
         const string CART_KEY = "MYCART";
         public List<CartItemDTO> Cart => HttpContext.Session.Get<List<CartItemDTO>>(CART_KEY) ?? new List<CartItemDTO>();
 
@@ -35,10 +38,26 @@ namespace MvcEcomerce.Controllers
             return View(Cart);
         }
         [HttpPost]
-        public IActionResult Checkout(CheckoutDTO request)
+        public IActionResult Checkout(CheckoutDTO request, string payment = "COD")
         {
             if (ModelState.IsValid)
             {
+                if (payment == "VnPay")
+                {
+                    var vnPayModel = new VnPaymentRequestModel
+                    {
+                        Amount = Cart.Sum(p => p.Amount),
+                        CreatedDate = DateTime.Now,
+                        Description = $"{request.FullName} {request.Phone}",
+                        FullName = request.FullName,
+                        OrderId = new Random().Next(1000, 100000)
+                    };
+
+                    var url = _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel);
+
+                    return Redirect(url);
+                }
+
                 var customerId = HttpContext.User.Claims.SingleOrDefault(p => p.Type == "CustomerID").Value;
                 var order = new HoaDon
                 {
@@ -93,6 +112,32 @@ namespace MvcEcomerce.Controllers
         public IActionResult Success()
         {
             return View();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult PaymentFail()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult PaymentCallBack() 
+        {
+            var response = _vnPayService.PaymentExecute(Request.Query);
+
+            if (response == null || response.VnPayResponseCode != "00")
+            {
+                TempData["Message"] = $"Lỗi thanh toán VN Pay: {response.VnPayResponseCode}";
+                return Redirect("PaymentFail");
+            }
+
+
+            // Lưu đơn hàng vô database
+
+            TempData["Message"] = $"Thanh toán VNPay thành công";
+            return Redirect("Success");
         }
 
         #region Paypal
