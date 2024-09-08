@@ -1,0 +1,59 @@
+﻿@using MvcEcomerce.Application.DTOs.RequestDTO
+
+@model RegisterDTO
+
+<!-- Register Page Start -->
+<div class="container-fluid mt-5 py-5">
+    <div class="container py-5">
+        <h1 class="mb-4">Register</h1>
+        <form asp-action="Register">
+            <div class="row g-5">
+                <div class="col-md-12 col-lg-6 col-xl-7">
+                    <div class="form-item">
+                        <label class="form-label my-3" asp-for="@Model.Id">Customer Id<sup>*</sup></label>
+                        <input type="text" class="form-control" asp-for="@Model.Id" placeholder="Enter your customer Id">
+                        <span asp-validation-for="@Model.Id" class="text-danger"></span>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3" asp-for="@Model.FullName">Full name<sup>*</sup></label>
+                        <input type="text" class="form-control" asp-for="@Model.FullName" placeholder="Enter your full name">
+                        <span asp-validation-for="@Model.FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3" asp-for="@Model.Password">Password<sup>*</sup></label>
+                        <input type="password" class="form-control" asp-for="@Model.Password" placeholder="Enter your password">
+                        <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3" asp-for="@Model.Email">Email<sup>*</sup></label>
+                        <input type="text" class="form-control" asp-for="@Model.Email" placeholder="Enter your email">
+                        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3" asp-for="@Model.Phone">Phone Number<sup>*</sup></label>
+                        <input type="text" class="form-control" asp-for="@Model.Phone" placeholder="Enter your phone number">
+                        <span asp-validation-for="@Model.Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3" asp-for="@Model.Address">Address<sup>*</sup></label>
+                        <input type="text" class="form-control" asp-for="@Model.Address" placeholder="Enter your address">
+                        <span asp-validation-for="@Model.Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-check my-3">
+                        <input type="checkbox" class="form-check-input" asp-for="@Model.Sex">
+                        <label class="form-check-label" asp-for="@Model.Sex">Male</label>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3" asp-for="@Model.DateOfBirth">Date Of Birth</label>
+                        <input type="date" class="form-control" asp-for="@Model.DateOfBirth">
+                        <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+                        <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Register</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Register Page End -->
